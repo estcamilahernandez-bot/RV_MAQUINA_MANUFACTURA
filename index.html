@@ -9,20 +9,21 @@
   <body>
     <a-scene background="color: #ECECEC">
       <!-- Piso -->
-      <a-plane rotation="-90 0 0" width="20" height="20" color="#999"></a-plane>
+      <a-plane rotation="-90 0 0" width="30" height="30" color="#b0b0b0"></a-plane>
 
-      <!-- Modelo GLB -->
+      <!-- Modelo GLB (bajado y escalado) -->
       <a-entity 
         gltf-model="maquina.glb"
-        position="0 0 0"
-        scale="0.5 0.5 0.5"
-        rotation="0 0 0">
+        position="0 -3 0"
+        scale="0.3 0.3 0.3"
+        material="color: #4A90E2; metalness: 0.4; roughness: 0.7"
+        rotation="0 45 0">
       </a-entity>
 
-      <!-- Cámara alejada -->
+      <!-- Cámara más alejada -->
       <a-entity 
         camera 
-        position="0 3 8" 
+        position="0 2 12" 
         look-controls
         wasd-controls>
       </a-entity>
@@ -31,7 +32,10 @@
       <a-entity light="type: ambient; color: #ffffff; intensity: 0.8"></a-entity>
 
       <!-- Luz direccional -->
-      <a-entity light="type: directional; color: #ffffff; intensity: 0.6" position="5 10 5"></a-entity>
+      <a-entity light="type: directional; color: #ffffff; intensity: 0.7" position="5 10 5"></a-entity>
+
+      <!-- Luz inferior para dar profundidad -->
+      <a-entity light="type: point; intensity: 0.4; color: #8888ff" position="0 -5 0"></a-entity>
     </a-scene>
   </body>
 </html>
