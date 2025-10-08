@@ -1,56 +1,73 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Celda de Manufactura Automatizada</title>
-    <meta name="description" content="Visualización 3D con A-Frame" />
-    <!-- Librería recomendada -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.7.0/aframe.min.js"></script>
-  </head>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Celda de Manufactura — A-Frame</title>
 
-  <body>
-    <a-scene background="color: #EAEAEA">
-      
-      <!-- Piso -->
-      <a-plane rotation="-90 0 0" width="40" height="40" color="#9e9e9e"
-               material="roughness: 1; metalness: 0"></a-plane>
+  <!-- A-Frame local (recomendado si el CDN se bloquea) 
+  <script src="libs/aframe.min.js"></script>-->
+  <!-- Alternativa CDN:-->
+  <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+  
 
-      <!-- Modelo GLB (ajustado para quedar apoyado) -->
-      <a-entity 
-        gltf-model="maquina.glb"
-        position="0 -15 0"
-        scale="0.05 0.05 0.05"
-        rotation="0 45 0"
-        material="color: #4A90E2; metalness: 0.5; roughness: 0.4">
-      </a-entity>
+  <style>
+    html,body{height:100%;margin:0}
+  </style>
 
-      <!-- Cámara más alejada y elevada -->
-      <a-entity 
-        camera 
-        position="0 4 12" 
-        look-controls="pointerLockEnabled: true" 
-        wasd-controls>
-      </a-entity>
+  <!-- Componente: baja el modelo hasta apoyar su base en el piso (y=0) -->
+  <script>
+    AFRAME.registerComponent('drop-to-ground', {
+      init: function () {
+        this.el.addEventListener('model-loaded', () => {
+          const mesh = this.el.getObject3D('mesh');
+          if (!mesh) return;
+          mesh.updateMatrixWorld(true);
+          const box = new THREE.Box3().setFromObject(mesh);
+          const minY = box.min.y;
+          this.el.object3D.position.y -= minY; // base al piso
+          // Si quieres centrar también en X/Z, descomenta:
+          const center = box.getCenter(new THREE.Vector3());
+          this.el.object3D.position.x -= center.x;
+          this.el.object3D.position.z -= center.z;
+        });
+      }
+    });
+  </script>
+</head>
+<body>
+  <a-scene
+    background="color:#ECECEC"
+    renderer="colorManagement: true; physicallyCorrectLights: true"
+    xr-mode-ui="enabled: true">
 
-      <!-- Luz ambiental -->
-      <a-entity light="type: ambient; color: #ffffff; intensity: 0.6"></a-entity>
+    <!-- Activos -->
+    <a-assets timeout="40000">
+      <!-- Si tu GLB está en otra ruta, cambia el src (p.ej. assets/models/Maquina.glb) -->
+      <a-asset-item id="celda" src="maquina.glb"></a-asset-item>
+    </a-assets>
 
-      <!-- Luz direccional principal -->
-      <a-entity light="type: directional; color: #ffffff; intensity: 1.1" position="6 10 6"></a-entity>
+    <!-- Luces -->
+    <a-entity light="type: hemisphere; color: #ffffff; groundColor: #777; intensity: 0.85"
+              position="0 4 0"></a-entity>
+    <a-entity light="type: directional; intensity: 0.9" position="3 6 5"></a-entity>
 
-      <!-- Luz lateral azulada -->
-      <a-entity light="type: point; color: #aaddff; intensity: 0.5" position="-4 3 -3"></a-entity>
+    <!-- Piso en y=0 -->
+    <a-plane rotation="90 90  180" width="10" height="10" color="#cfcfcf"
+             shadow="receive: true"></a-plane>
 
-      <!-- Luz inferior suave -->
-      <a-entity light="type: point; intensity: 0.25; color: #6666ff" position="0 -2 0"></a-entity>
-      
-    </a-scene>
-  </body>
+    <!-- TU MODELO: pegado al piso y sin primitivas extra -->
+    <a-entity id="modelo"
+              gltf-model="#celda"
+              scale="0.5 0.8 0.4"
+              drop-to-ground
+              shadow="cast: true; receive: true">
+    </a-entity>
+
+    <!-- Cámara -->
+    <a-entity id="rig" position="-100 100 0">
+      <a-camera wasd-controls="acceleration: 10" look-controls="pointerLockEnabled: true"></a-camera>
+    </a-entity>
+  </a-scene>
+</body>
 </html>
-
-
-
-
-
-
-
