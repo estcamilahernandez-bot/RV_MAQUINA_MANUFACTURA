@@ -2,26 +2,30 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Modelo centrado GLB</title>
+    <title>Modelo centrado sin piso</title>
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script>
-      // Script para centrar el modelo automáticamente
+      // 🔹 Centra el modelo y ajusta la cámara al cargarlo
       AFRAME.registerComponent('center-model', {
         init: function () {
           this.el.addEventListener('model-loaded', () => {
             const object3D = this.el.getObject3D('mesh');
             if (!object3D) return;
 
-            // Calcular el tamaño y centro del modelo
             const box = new THREE.Box3().setFromObject(object3D);
             const center = new THREE.Vector3();
             box.getCenter(center);
             const size = new THREE.Vector3();
             box.getSize(size);
 
-            // Reubicar el modelo para que quede centrado
-            object3D.position.sub(center); // centra en el origen
-            object3D.position.y -= box.min.y; // lo alinea con el piso
+            // Centrar modelo en el origen y alinear con el piso
+            object3D.position.sub(center);
+            object3D.position.y -= box.min.y;
+
+            // Ajustar cámara automáticamente
+            const camera = document.querySelector('[camera]');
+            const distance = Math.max(size.x, size.y, size.z) * 1.5;
+            camera.setAttribute('position', `0 ${size.y / 2} ${distance}`);
           });
         },
       });
@@ -30,23 +34,14 @@
 
   <body>
     <a-scene background="color: #ECECEC">
-      <!-- Luz ambiental suave -->
-      <a-entity light="type: ambient; intensity: 0.6"></a-entity>
-      <!-- Luz direccional para sombras -->
-      <a-entity light="type: directional; intensity: 0.8" position="1 3 2"></a-entity>
+      <!-- Luces -->
+      <a-entity light="type: ambient; intensity: 0.8"></a-entity>
+      <a-entity light="type: directional; intensity: 1" position="2 4 3"></a-entity>
 
-      <!-- Cámara y controles -->
-      <a-entity 
-        position="0 5 4"
-        camera
-        look-controls
-        wasd-controls>
-      </a-entity>
+      <!-- Cámara con controles -->
+      <a-entity camera look-controls wasd-controls></a-entity>
 
-      <!-- Piso -->
- 
-
-      <!-- Modelo GLB centrado -->
+      <!-- Modelo centrado -->
       <a-entity
         gltf-model="Double_station_lathe_loading_and_unloading.glb"
         scale="1 1 1"
@@ -56,7 +51,6 @@
     </a-scene>
   </body>
 </html>
-
 
 
 
