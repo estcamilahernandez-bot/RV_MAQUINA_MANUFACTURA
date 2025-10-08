@@ -5,17 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Celda de Manufactura — A-Frame</title>
 
-  <!-- A-Frame local (recomendado si el CDN se bloquea) 
-  <script src="libs/aframe.min.js"></script>-->
-  <!-- Alternativa CDN:-->
-  <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
-  
+  <!-- A-Frame alternativo por bloqueos -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.7.0/aframe.min.js"></script>
 
   <style>
-    html,body{height:100%;margin:0}
+    html, body { height:100%; margin:0; }
   </style>
 
-  <!-- Componente: baja el modelo hasta apoyar su base en el piso (y=0) -->
+  <!-- Componente: baja el modelo hasta el piso -->
   <script>
     AFRAME.registerComponent('drop-to-ground', {
       init: function () {
@@ -25,16 +22,13 @@
           mesh.updateMatrixWorld(true);
           const box = new THREE.Box3().setFromObject(mesh);
           const minY = box.min.y;
-          this.el.object3D.position.y -= minY; // base al piso
-          // Si quieres centrar también en X/Z, descomenta:
-          const center = box.getCenter(new THREE.Vector3());
-          this.el.object3D.position.x -= center.x;
-          this.el.object3D.position.z -= center.z;
+          this.el.object3D.position.y -= minY;
         });
       }
     });
   </script>
 </head>
+
 <body>
   <a-scene
     background="color:#ECECEC"
@@ -43,29 +37,27 @@
 
     <!-- Activos -->
     <a-assets timeout="40000">
-      <!-- Si tu GLB está en otra ruta, cambia el src (p.ej. assets/models/Maquina.glb) -->
-      <a-asset-item id="celda" src="Maquina.glb"></a-asset-item>
+      <a-asset-item id="celda" src="maquina.glb"></a-asset-item>
     </a-assets>
 
     <!-- Luces -->
-    <a-entity light="type: hemisphere; color: #ffffff; groundColor: #777; intensity: 0.85"
-              position="0 4 0"></a-entity>
+    <a-entity light="type: hemisphere; color: #ffffff; groundColor: #777; intensity: 0.85" position="0 4 0"></a-entity>
     <a-entity light="type: directional; intensity: 0.9" position="3 6 5"></a-entity>
 
-    <!-- Piso en y=0 -->
-    <a-plane rotation="90 90  180" width="10" height="10" color="#cfcfcf"
-             shadow="receive: true"></a-plane>
+    <!-- Piso -->
+    <a-plane rotation="-90 0 0" width="10" height="10" color="#cfcfcf" shadow="receive: true"></a-plane>
 
-    <!-- TU MODELO: pegado al piso y sin primitivas extra -->
+    <!-- Modelo -->
     <a-entity id="modelo"
               gltf-model="#celda"
-              scale="0.5 0.8 0.4"
+              scale="1 1 1"
+              rotation="0 180 0"
               drop-to-ground
               shadow="cast: true; receive: true">
     </a-entity>
 
     <!-- Cámara -->
-    <a-entity id="rig" position="-100 100 0">
+    <a-entity id="rig" position="0 2 5">
       <a-camera wasd-controls="acceleration: 10" look-controls="pointerLockEnabled: true"></a-camera>
     </a-entity>
   </a-scene>
