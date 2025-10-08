@@ -2,43 +2,51 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Celda de Manufactura</title>
+    <title>Celda de Manufactura Automatizada</title>
     <meta name="description" content="Visualización 3D con A-Frame" />
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <!-- Librería recomendada -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.7.0/aframe.min.js"></script>
   </head>
-  <body>
-    <a-scene background="color: #ECECEC">
-      <!-- Piso -->
-      <a-plane rotation="-90 0 0" width="30" height="30" color="#b0b0b0"></a-plane>
 
-      <!-- Modelo GLB (bajado y escalado) -->
+  <body>
+    <a-scene background="color: #EAEAEA">
+      
+      <!-- Piso -->
+      <a-plane rotation="-90 0 0" width="40" height="40" color="#9e9e9e" material="roughness: 1; metalness: 0"></a-plane>
+
+      <!-- Modelo GLB -->
       <a-entity 
-        gltf-model="presion.glb"
-        position="0 -10 0"
+        gltf-model="maquina.glb"
+        position="0 0 0"
         scale="0.07 0.07 0.07"
-        material="color: #4A90E2; metalness: 0.4; roughness: 0.7"
-        rotation="0 45 0">
+        rotation="0 45 0"
+        material="color: #4A90E2; metalness: 0.5; roughness: 0.4">
       </a-entity>
 
-      <!-- Cámara más alejada -->
+      <!-- Cámara (alejada y ligeramente elevada) -->
       <a-entity 
         camera 
-        position="0 2 12" 
-        look-controls
+        position="0 3 10" 
+        look-controls="pointerLockEnabled: true" 
         wasd-controls>
       </a-entity>
 
       <!-- Luz ambiental -->
-      <a-entity light="type: ambient; color: #ffffff; intensity: 0.8"></a-entity>
+      <a-entity light="type: ambient; color: #ffffff; intensity: 0.7"></a-entity>
 
-      <!-- Luz direccional -->
-      <a-entity light="type: directional; color: #ffffff; intensity: 0.7" position="5 10 5"></a-entity>
+      <!-- Luz direccional principal -->
+      <a-entity light="type: directional; color: #ffffff; intensity: 1" position="4 10 6"></a-entity>
 
-      <!-- Luz inferior para dar profundidad -->
-      <a-entity light="type: point; intensity: 0.4; color: #8888ff" position="0 -5 0"></a-entity>
+      <!-- Luz de relleno lateral -->
+      <a-entity light="type: point; color: #aaddff; intensity: 0.6" position="-4 3 -3"></a-entity>
+
+      <!-- Luz inferior tenue -->
+      <a-entity light="type: point; intensity: 0.3; color: #6666ff" position="0 -2 0"></a-entity>
+      
     </a-scene>
   </body>
 </html>
+
 
 
 
