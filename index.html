@@ -1,56 +1,37 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Celda de Manufactura — A-Frame</title>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Celda de Manufactura</title>
+    <meta name="description" content="Visualización 3D con A-Frame" />
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene background="color: #ECECEC">
+      <!-- Piso -->
+      <a-plane rotation="-90 0 0" width="20" height="20" color="#999"></a-plane>
 
-  <!-- A-Frame CDN (versión recomendada para la universidad) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.7.0/aframe.min.js"></script>
+      <!-- Modelo GLB -->
+      <a-entity 
+        gltf-model="maquina.glb"
+        position="0 0 0"
+        scale="0.5 0.5 0.5"
+        rotation="0 0 0">
+      </a-entity>
 
-  <style>
-    html, body { height: 100%; margin: 0; }
-  </style>
-</head>
+      <!-- Cámara alejada -->
+      <a-entity 
+        camera 
+        position="0 3 8" 
+        look-controls
+        wasd-controls>
+      </a-entity>
 
-<body>
-  <a-scene
-    background="color:#ECECEC"
-    renderer="colorManagement: true; physicallyCorrectLights: true"
-    xr-mode-ui="enabled: true">
+      <!-- Luz ambiental -->
+      <a-entity light="type: ambient; color: #ffffff; intensity: 0.8"></a-entity>
 
-    <!-- Activos (modelo GLB) -->
-    <a-assets timeout="40000">
-      <!-- Asegúrate de que el nombre coincide exactamente con el archivo en tu repositorio -->
-      <a-asset-item id="celda" src="maquina.glb"></a-asset-item>
-    </a-assets>
-
-    <!-- Luces -->
-    <a-entity light="type: hemisphere; color: #ffffff; groundColor: #777; intensity: 0.85" position="0 4 0"></a-entity>
-    <a-entity light="type: directional; intensity: 0.9" position="3 6 5"></a-entity>
-
-    <!-- Piso -->
-    <a-plane rotation="-90 0 0"
-             width="10"
-             height="10"
-             color="#cfcfcf"
-             shadow="receive: true"></a-plane>
-
-    <!-- Modelo principal -->
-    <a-entity id="modelo"
-              gltf-model="#celda"
-              position="0 -0.5 0"
-              scale="1 1 1"
-              rotation="0 180 0"
-              shadow="cast: true; receive: true">
-    </a-entity>
-
-    <!-- Cámara (más alejada y alta para buena vista) -->
-    <a-entity id="rig" position="0 4 10">
-      <a-camera wasd-controls="acceleration: 20"
-                look-controls="pointerLockEnabled: true">
-      </a-camera>
-    </a-entity>
-  </a-scene>
-</body>
+      <!-- Luz direccional -->
+      <a-entity light="type: directional; color: #ffffff; intensity: 0.6" position="5 10 5"></a-entity>
+    </a-scene>
+  </body>
 </html>
