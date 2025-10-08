@@ -1,67 +1,61 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Celda de Manufactura — A-Frame</title>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Modelo centrado GLB</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script>
+      // Script para centrar el modelo automáticamente
+      AFRAME.registerComponent('center-model', {
+        init: function () {
+          this.el.addEventListener('model-loaded', () => {
+            const object3D = this.el.getObject3D('mesh');
+            if (!object3D) return;
 
-  <!-- A-Frame -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.7.0/aframe.min.js"></script>
+            // Calcular el tamaño y centro del modelo
+            const box = new THREE.Box3().setFromObject(object3D);
+            const center = new THREE.Vector3();
+            box.getCenter(center);
+            const size = new THREE.Vector3();
+            box.getSize(size);
 
-  <style>
-    html,body { height: 100%; margin: 0; background: #EAEAEA; }
-  </style>
-</head>
-<body>
-  <a-scene
-    background="color:#EAEAEA"
-    renderer="colorManagement: true; physicallyCorrectLights: true"
-    xr-mode-ui="enabled: true">
+            // Reubicar el modelo para que quede centrado
+            object3D.position.sub(center); // centra en el origen
+            object3D.position.y -= box.min.y; // lo alinea con el piso
+          });
+        },
+      });
+    </script>
+  </head>
 
-    <!-- 🔹 Cargar modelo -->
-    <a-assets timeout="40000">
-      <a-asset-item id="celda" src="Double_station_lathe_loading_and_unloading.glb"></a-asset-item>
-    </a-assets>
+  <body>
+    <a-scene background="color: #ECECEC">
+      <!-- Luz ambiental suave -->
+      <a-entity light="type: ambient; intensity: 0.6"></a-entity>
+      <!-- Luz direccional para sombras -->
+      <a-entity light="type: directional; intensity: 0.8" position="1 3 2"></a-entity>
 
-    <!-- 🔹 Iluminación -->
-    <a-entity light="type: hemisphere; color: #ffffff; groundColor: #888; intensity: 0.9" position="0 5 0"></a-entity>
-    <a-entity light="type: directional; color: #ffffff; intensity: 1.1" position="5 10 5"></a-entity>
-    <a-entity light="type: point; color: #88ccff; intensity: 0.5" position="-3 3 -3"></a-entity>
+      <!-- Cámara y controles -->
+      <a-entity 
+        position="0 1.6 4"
+        camera
+        look-controls
+        wasd-controls>
+      </a-entity>
 
-    <!-- 🔹 Piso -->
-    <a-plane rotation="-90 0 0" width="20" height="20" color="#b0b0b0"
-             material="roughness:1; metalness:0"></a-plane>
+      <!-- Piso -->
+      <a-plane rotation="-90 0 0" width="20" height="20" color="#ccc"></a-plane>
 
-    <!-- 🔹 Modelo centrado y recto -->
-    <a-entity 
-      gltf-model="#celda"
-      position="0 0 0"          <!-- centrado en el piso -->
-      rotation="0 180 0"        <!-- mirando hacia la cámara -->
-      scale="0.8 0.8 0.8"       <!-- tamaño ajustado -->
-      shadow="cast: true; receive: true">
-    </a-entity>
-
-    <!-- 🔹 Cámara -->
-    <a-entity id="rig" position="0 3 18">
-      <a-camera wasd-controls look-controls="pointerLockEnabled: true"></a-camera>
-    </a-entity>
-  </a-scene>
-
-  <!-- 🔹 Script para mover la cámara en altura -->
-  <script>
-    document.addEventListener('keydown', e => {
-      const rig = document.querySelector('#rig');
-      const pos = rig.getAttribute('position');
-
-      if (e.key === 'ArrowUp') pos.y += 0.5;     // Subir cámara
-      if (e.key === 'ArrowDown') pos.y -= 0.5;   // Bajar cámara
-
-      rig.setAttribute('position', pos);
-    });
-  </script>
-</body>
+      <!-- Modelo GLB centrado -->
+      <a-entity
+        gltf-model="Double_station_lathe_loading_and_unloading.glb"
+        scale="1 1 1"
+        center-model
+        animation-mixer
+      ></a-entity>
+    </a-scene>
+  </body>
 </html>
-
 
 
 
