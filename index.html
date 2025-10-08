@@ -5,11 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Celda de Manufactura — A-Frame</title>
 
-  <!-- A-Frame local (recomendado si el CDN se bloquea) 
-  <script src="libs/aframe.min.js"></script>-->
-  <!-- Alternativa CDN:-->
-  <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
-  
+  <!-- A-Frame recomendado (CDN alterno por bloqueos de la uni) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.7.0/aframe.min.js"></script>
 
   <style>
     html,body{height:100%;margin:0}
@@ -25,8 +22,9 @@
           mesh.updateMatrixWorld(true);
           const box = new THREE.Box3().setFromObject(mesh);
           const minY = box.min.y;
-          this.el.object3D.position.y -= minY; // base al piso
-          // Si quieres centrar también en X/Z, descomenta:
+          // mueve la entidad para que la base quede en y=0
+          this.el.object3D.position.y -= minY;
+          // centrar en X/Z (descomenta si lo quieres)
           const center = box.getCenter(new THREE.Vector3());
           this.el.object3D.position.x -= center.x;
           this.el.object3D.position.z -= center.z;
@@ -37,37 +35,38 @@
 </head>
 <body>
   <a-scene
-    background="color:#ECECEC"
+    background="color:#EDEDED"
     renderer="colorManagement: true; physicallyCorrectLights: true"
-    xr-mode-ui="enabled: true">
+    xr-mode-ui="enabled: true"
+    shadow="type:pcfsoft">
 
-    <!-- Activos -->
+    <!-- Assets: asegúrate de que el nombre coincide exactamente (maquina.glb) -->
     <a-assets timeout="40000">
-      <!-- Si tu GLB está en otra ruta, cambia el src (p.ej. assets/models/Maquina.glb) -->
       <a-asset-item id="celda" src="maquina.glb"></a-asset-item>
     </a-assets>
 
-    <!-- Luces -->
-    <a-entity light="type: hemisphere; color: #ffffff; groundColor: #777; intensity: 0.85"
-              position="0 4 0"></a-entity>
-    <a-entity light="type: directional; intensity: 0.9" position="3 6 5"></a-entity>
+    <!-- Luces: tono cálido principal + relleno frío para contraste -->
+    <a-entity light="type: hemisphere; color: #ffffff; groundColor: #bdbdbd; intensity: 0.9" position="0 5 0"></a-entity>
+    <a-entity light="type: directional; color: #ffffff; intensity: 1; castShadow: true" position="4 8 6"></a-entity>
+    <a-entity light="type: point; color: #aaddff; intensity: 0.4" position="-3 2 -3"></a-entity>
 
-    <!-- Piso en y=0 -->
-    <a-plane rotation="90 90  180" width="10" height="10" color="#cfcfcf"
-             shadow="receive: true"></a-plane>
+    <!-- Piso (y=0). rotación corregida -->
+    <a-plane rotation="-90 0 0" width="14" height="14" color="#cfcfcf"
+             material="metalness:0; roughness:1" shadow="receive: true"></a-plane>
 
-    <!-- TU MODELO: pegado al piso y sin primitivas extra -->
+    <!-- Modelo GLB: uniforme, drop-to-ground para apoyarlo automáticamente -->
     <a-entity id="modelo"
               gltf-model="#celda"
-              scale="0.5 0.8 0.4"
+              scale="0.06 0.06 0.06"
               drop-to-ground
               shadow="cast: true; receive: true">
     </a-entity>
 
-    <!-- Cámara -->
-    <a-entity id="rig" position="-100 100 0">
-      <a-camera wasd-controls="acceleration: 10" look-controls="pointerLockEnabled: true"></a-camera>
+    <!-- Cámara / rig -->
+    <a-entity id="rig" position="0 1.6 6">
+      <a-camera wasd-controls="acceleration: 20" look-controls="pointerLockEnabled: true"></a-camera>
     </a-entity>
+
   </a-scene>
 </body>
 </html>
