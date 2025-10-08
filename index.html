@@ -5,28 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Celda de Manufactura — A-Frame</title>
 
-  <!-- A-Frame alternativo por bloqueos -->
+  <!-- A-Frame CDN (versión recomendada para la universidad) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.7.0/aframe.min.js"></script>
 
   <style>
-    html, body { height:100%; margin:0; }
+    html, body { height: 100%; margin: 0; }
   </style>
-
-  <!-- Componente: baja el modelo hasta el piso -->
-  <script>
-    AFRAME.registerComponent('drop-to-ground', {
-      init: function () {
-        this.el.addEventListener('model-loaded', () => {
-          const mesh = this.el.getObject3D('mesh');
-          if (!mesh) return;
-          mesh.updateMatrixWorld(true);
-          const box = new THREE.Box3().setFromObject(mesh);
-          const minY = box.min.y;
-          this.el.object3D.position.y -= minY;
-        });
-      }
-    });
-  </script>
 </head>
 
 <body>
@@ -35,8 +19,9 @@
     renderer="colorManagement: true; physicallyCorrectLights: true"
     xr-mode-ui="enabled: true">
 
-    <!-- Activos -->
+    <!-- Activos (modelo GLB) -->
     <a-assets timeout="40000">
+      <!-- Asegúrate de que el nombre coincide exactamente con el archivo en tu repositorio -->
       <a-asset-item id="celda" src="maquina.glb"></a-asset-item>
     </a-assets>
 
@@ -45,20 +30,26 @@
     <a-entity light="type: directional; intensity: 0.9" position="3 6 5"></a-entity>
 
     <!-- Piso -->
-    <a-plane rotation="-90 0 0" width="10" height="10" color="#cfcfcf" shadow="receive: true"></a-plane>
+    <a-plane rotation="-90 0 0"
+             width="10"
+             height="10"
+             color="#cfcfcf"
+             shadow="receive: true"></a-plane>
 
-    <!-- Modelo -->
+    <!-- Modelo principal -->
     <a-entity id="modelo"
               gltf-model="#celda"
+              position="0 -0.5 0"
               scale="1 1 1"
               rotation="0 180 0"
-              drop-to-ground
               shadow="cast: true; receive: true">
     </a-entity>
 
-    <!-- Cámara -->
-    <a-entity id="rig" position="0 2 5">
-      <a-camera wasd-controls="acceleration: 10" look-controls="pointerLockEnabled: true"></a-camera>
+    <!-- Cámara (más alejada y alta para buena vista) -->
+    <a-entity id="rig" position="0 4 10">
+      <a-camera wasd-controls="acceleration: 20"
+                look-controls="pointerLockEnabled: true">
+      </a-camera>
     </a-entity>
   </a-scene>
 </body>
